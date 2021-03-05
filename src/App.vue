@@ -1,12 +1,23 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png" />
+    <ul>
+      <li>Elenco puntato senza stile</li>
+    </ul>  
     <!-- <HelloWorld msg="Welcome to Your Vue.js App" /> -->
     <Title message="I pokemon di Classe #22" />
 
-    <FormCustom title="Cerca un Pokemon" @sendForm="searchPokemon" />
+    <FormCustom 
+      title="Cerca un Pokemon" 
+      @sendForm="searchPokemon" 
+      @sendTypeSelected="sendTypeSelected"
+    />
 
-    <FormCustom title="Cerca per tipologia" @sendForm="searchType" />
+    <FormCustom 
+      title="Cerca per tipologia" 
+      @sendForm="searchType" 
+      @sendTypeSelected="sendTypeSelected"
+    />
     <!-- <ul>
       <li v-for="(pokemon, index) in pokemons" :key="index">
         <a :href="pokemon.url" target="_blank">{{ pokemon.name }}</a>
@@ -49,9 +60,30 @@ export default {
     this.axios
       .get(`${this.base_url}/pokemon`)
       .then( (response) => {
-        console.log(response.data);
+        // console.log(response.data);
+        // https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/1.svg
 
-        this.pokemons = response.data.results;
+        // console.log("URL: " + response.data.results[0].url);
+        // console.log(response.data.results[0].url.split("/"));
+
+        // this.pokemons = response.data.results;
+
+        response.data.results.forEach(
+          (element) => {
+            const idArray = element.url.split("/");
+            const id = idArray[idArray.length - 2];
+
+            this.pokemons.push(
+              {
+                ...element,
+                img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`
+              }
+            );
+
+          }
+        );
+
+        console.log(this.pokemons);
       });
   },
   methods: {
@@ -63,12 +95,14 @@ export default {
       .then( (response) => {
         console.log(response.data);
 
+
         this.pokemons = [
           {
             name: response.data.name,
             url: `${this.base_url}/pokemon/${text}`,
             height: response.data.height,
-            weight: response.data.weight
+            weight: response.data.weight,
+            img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${response.data.id}.svg`
           }  
         ];
       });
@@ -78,19 +112,27 @@ export default {
       .get(`${this.base_url}/type/${text}`)
       .then( (response) => {
         // console.log("Type Search");
-        console.log(response.data.pokemon);
+        // console.log(response.data.pokemon);
+  
 
         this.pokemons = response.data.pokemon.map(
           (element) => {
             // console.log(element);
+            const idArray = element.pokemon.url.split("/");
+            const id = idArray[idArray.length - 2];
 
             return {
               "name": element.pokemon.name, 
-              "url": element.pokemon.url
+              "url": element.pokemon.url,
+              "img": `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`
             }
           }
         );
       });
+    },
+    sendTypeSelected: function(text){
+      console.log("Opzione selezionata arrivata fino ad App: " + text);
+      this.searchType(text);
     }
   }
 };
@@ -108,6 +150,6 @@ export default {
 
 ul{
   list-style: none;
-  margin: 0;
+  padding: 0;
 }
 </style>

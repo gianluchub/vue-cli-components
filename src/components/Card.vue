@@ -1,6 +1,9 @@
 <template>
   <li>
-      <a :href="url" target="_blank">{{ name }}</a>
+      <a :href="url" target="_blank">
+          <h4>{{ name }}</h4>
+          <img :src="img" :alt="name">
+        </a>
       <p v-if="height"><strong>Altezza: </strong>{{ height }}</p>
       <p v-if="weight"><strong>Peso: </strong>{{ weight }}</p>
   </li>
@@ -20,15 +23,34 @@ export default {
             required: true
         },
         height: {
-            type: String
+            type: Number
         },
         weight: {
-            type: String
+            type: Number
         },
+        img: {
+            type: String
+        }
     }
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+    @import '../scss/_variables.scss';    
 
+    li {
+        width: calc(100% / 4 - 10px);
+        margin: 5px;
+        text-align: center;
+        background-color: $blue;
+
+        a {
+            text-decoration: none;
+            color: darken($blue, 50%);
+        }
+    }
+    img {
+        width: 60%;
+        margin-bottom: 1.33em;
+    }
 </style>

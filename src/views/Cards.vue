@@ -11,6 +11,7 @@
             :key="index"
             :name="card.name"
             :url="card.url"
+            :img="card.img"
             :height="card.height"
             :weight="card.weight"
         />
@@ -38,6 +39,9 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+    ul {
+        display: flex;
+        flex-wrap: wrap;
+    }
 </style>
